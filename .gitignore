@@ -6,3 +6,4 @@
 
 # Ignore .o files
 *.o
+*.hi
