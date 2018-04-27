@@ -18,6 +18,9 @@ updateCanvas canvas command = do
     else if (take 2 command) == "rt" then
         turnRight argument
 
+    else if (take 2 command) == "lt" then
+        turnLeft argument
+
     else
         return ()
 
@@ -43,8 +46,8 @@ moveForward distance = do
 
 turnRight angle = do
 
-    rotate (angle*pi/180)
-    (w,h) <- getCurrentPoint
+    rotate (angle *pi / 180)
+    (w, h) <- getCurrentPoint
 
     markEnd w h
     where markEnd x y = do
@@ -55,3 +58,7 @@ turnRight angle = do
             setSourceRGB 1 0 0
             moveTo x y
             strokePreserve
+
+turnLeft angle = do
+
+    turnRight (-1 *angle)
