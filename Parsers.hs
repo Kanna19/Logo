@@ -11,10 +11,8 @@ import Text.Read
 import Data.Maybe
 
 stringToCommands :: String -> (String, String)
-stringToCommands string = if ' ' `elemIndex` (drop 3 string) /= Nothing then
-                          splitAt (fromJust(' ' `elemIndex` (drop 3 string)) + 4) string
-                          else (string, "")
-
+stringToCommands string = (unwords (take 2 (words string)), unwords (drop 2 (words string)))
+                          
 stringToCommandss :: String -> (String, String)
 stringToCommandss string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
 
@@ -46,24 +44,17 @@ repeatCommands canvas times commands = do
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
 
-    case firstTwoLetters of "fd" -> moveForward argument_2
-                            "rt" -> turnRight argument_2
-                            "lt" -> turnLeft argument_2
-                            "bk" -> moveBackward argument_2
-                            _    -> return ()
+    case firstWord of "fd"     -> moveForward argument
+                      "rt"     -> turnRight argument
+                      "lt"     -> turnLeft argument
+                      "bk"     -> moveBackward argument
+                      "tree"   -> tree argument
+                      "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
+                      _        -> return ()
 
-    case firstFourLetters of "tree" -> tree argument_4
-                             _      -> return ()
-
-    case firstSixLetters of "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
-                            _        -> return ()
-                            
-    where firstTwoLetters  = take 2 command
-          firstFourLetters = take 4 command
-          firstSixLetters  = take 6 command
+    where firstWord        = head (words command)
+          argument         = read (head (tail((words command)))) :: Double
           (repArg, repCom) = stringToCommandss (drop 7 command)
-          argument_2       = read(drop 3 command) :: Double
-          argument_4       = read(drop 5 command) :: Double
 
 moveForward :: Double -> Render ()
 moveForward distance = do
@@ -128,3 +119,20 @@ tree size
                   moveForward (size / 6)
                   moveBackward size
                   return ()
+
+clearScreen :: Render ()
+clearScreen = do
+    setSourceRGB 1 1 1
+    paint
+    strokePreserve
+
+    (w, h) <- getCurrentPoint
+    markEnd w h
+    where markEnd x y = do
+            setSourceRGB 0 1 0
+            moveTo x y
+            lineTo x y
+            stroke
+            setSourceRGB 1 0 0
+            moveTo x y
+            strokePreserve

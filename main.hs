@@ -34,6 +34,7 @@ main = do
     widgetSetSizeRequest canvas 800 300
 
     canvas `on` draw $ centreTurtle canvas
+    canvas `on` draw $ clearScreen
 
     btn <- buttonNew
     set btn [ buttonLabel := "Enter"]
@@ -93,7 +94,7 @@ centreTurtle canvas = do
         height = realToFrac height'
 
     setSourceRGB 1 0 0
-    setLineWidth 4
+    setLineWidth 1
     setLineCap LineCapRound
     setLineJoin LineJoinRound
 
