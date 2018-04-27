@@ -18,6 +18,10 @@ updateCanvas canvas command = do
                             "bk" -> moveBackward argument_2
                             _    -> return ()
 
+    case firstFourLetters of "tree" -> tree argument_4
+                             "quit" -> liftIO mainQuit
+                             _      -> return ()
+
     where firstTwoLetters  = take 2 command
           firstFourLetters = take 4 command
           argument_2       = read(drop 3 command) :: Double
@@ -62,3 +66,27 @@ turnRight angle = do
 
 turnLeft :: Double -> Render ()
 turnLeft angle = turnRight (-1 * angle)
+
+tree :: Double -> Render ()
+tree size
+    | size < 5  = do
+                  moveForward size 
+                  moveBackward size
+                  return ()
+ 
+    | otherwise = do
+                  moveForward (size / 3)  
+                  turnLeft 30
+                  tree (2 * size / 3)
+                  turnRight 30
+                  moveForward (size / 6)
+                  turnRight 25
+                  tree (size / 2)
+                  turnLeft 25
+                  moveForward (size / 3)
+                  turnRight 25
+                  tree (size / 2)
+                  turnLeft 25
+                  moveForward (size / 6)
+                  moveBackward size
+                  return ()
