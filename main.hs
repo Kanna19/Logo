@@ -15,8 +15,6 @@ main = do
     -- void is used as no command line arguments are needed
     void initGUI
 
-    putStrLn "Bom!"
-
     -- Create main window
     window <- windowNew
     set window [ windowTitle         := "Logo"

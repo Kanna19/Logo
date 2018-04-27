@@ -40,7 +40,6 @@ repeatCommands canvas times commands = do
     
     else return ()
 
-
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
 
@@ -50,6 +49,8 @@ updateCanvas canvas command = do
                       "bk"     -> moveBackward argument
                       "tree"   -> tree argument
                       "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
+                      "clear"  -> clearScreen
+                      "exit"   -> liftIO mainQuit
                       _        -> return ()
 
     where firstWord        = head (words command)
