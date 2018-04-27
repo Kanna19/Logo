@@ -27,6 +27,7 @@ updateCanvas canvas command = do
         where argument = read(drop 3 command) :: Double
 
 
+moveForward :: Double -> Render ()
 moveForward distance = do
 
     (w, h) <- getCurrentPoint
@@ -44,6 +45,7 @@ moveForward distance = do
             moveTo x y
             strokePreserve
 
+turnRight :: Double -> Render ()
 turnRight angle = do
 
     rotate (angle *pi / 180)
@@ -59,6 +61,7 @@ turnRight angle = do
             moveTo x y
             strokePreserve
 
+turnLeft :: Double -> Render ()
 turnLeft angle = do
 
     turnRight (-1 *angle)
