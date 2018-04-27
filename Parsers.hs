@@ -50,6 +50,7 @@ updateCanvas canvas command = do
                             "rt" -> turnRight argument_2
                             "lt" -> turnLeft argument_2
                             "bk" -> moveBackward argument_2
+                            "cl" -> clearScreen
                             _    -> return ()
 
     case firstFourLetters of "tree" -> tree argument_4
@@ -128,3 +129,20 @@ tree size
                   moveForward (size / 6)
                   moveBackward size
                   return ()
+
+clearScreen :: Render ()
+clearScreen = do
+    setSourceRGB 1 1 1
+    paint
+    strokePreserve
+
+    (w, h) <- getCurrentPoint
+    markEnd w h
+    where markEnd x y = do
+            setSourceRGB 0 1 0
+            moveTo x y
+            lineTo x y
+            stroke
+            setSourceRGB 1 0 0
+            moveTo x y
+            strokePreserve

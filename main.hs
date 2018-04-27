@@ -34,6 +34,7 @@ main = do
     widgetSetSizeRequest canvas 800 300
 
     canvas `on` draw $ centreTurtle canvas
+    canvas `on` draw $ clearScreen
 
     btn <- buttonNew
     set btn [ buttonLabel := "Enter"]
