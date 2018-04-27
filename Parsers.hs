@@ -12,20 +12,16 @@ import Text.Read
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
 
-    if (take 2 command) == "fd" then
-        moveForward argument
+    case firstTwoLetters of "fd" -> moveForward argument_2
+                            "rt" -> turnRight argument_2
+                            "lt" -> turnLeft argument_2
+                            "bk" -> moveBackward argument_2
+                            _    -> return ()
 
-    else if (take 2 command) == "rt" then
-        turnRight argument
-
-    else if (take 2 command) == "lt" then
-        turnLeft argument
-
-    else
-        return ()
-
-        where argument = read(drop 3 command) :: Double
-
+    where firstTwoLetters  = take 2 command
+          firstFourLetters = take 4 command
+          argument_2       = read(drop 3 command) :: Double
+          argument_4       = read(drop 5 command) :: Double
 
 moveForward :: Double -> Render ()
 moveForward distance = do
@@ -45,10 +41,13 @@ moveForward distance = do
             moveTo x y
             strokePreserve
 
+moveBackward :: Double -> Render ()
+moveBackward distance = moveForward (-1 * distance)
+
 turnRight :: Double -> Render ()
 turnRight angle = do
 
-    rotate (angle *pi / 180)
+    rotate (angle * pi / 180)
     (w, h) <- getCurrentPoint
 
     markEnd w h
@@ -62,6 +61,4 @@ turnRight angle = do
             strokePreserve
 
 turnLeft :: Double -> Render ()
-turnLeft angle = do
-
-    turnRight (-1 *angle)
+turnLeft angle = turnRight (-1 * angle)
