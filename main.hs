@@ -94,7 +94,7 @@ centreTurtle canvas = do
         height = realToFrac height'
 
     setSourceRGB 1 0 0
-    setLineWidth 4
+    setLineWidth 1
     setLineCap LineCapRound
     setLineJoin LineJoinRound
 

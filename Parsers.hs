@@ -11,9 +11,8 @@ import Text.Read
 import Data.Maybe
 
 stringToCommands :: String -> (String, String)
-stringToCommands string = if ' ' `elemIndex` (drop 3 string) /= Nothing then
-                          splitAt (fromJust(' ' `elemIndex` (drop 3 string)) + 4) string
-                          else (string, "")
+stringToCommands string = (unwords (take 2 (words string)), unwords (drop 2 (words string)))
+                          
 
 stringToCommandss :: String -> (String, String)
 stringToCommandss string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
