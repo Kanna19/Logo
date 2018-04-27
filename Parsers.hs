@@ -8,6 +8,40 @@ import Graphics.Rendering.Cairo
 import Data.List
 import Data.Typeable
 import Text.Read
+import Data.Maybe
+
+stringToCommands :: String -> (String, String)
+stringToCommands string = if ' ' `elemIndex` (drop 3 string) /= Nothing then
+                          splitAt (fromJust(' ' `elemIndex` (drop 3 string)) + 4) string
+                          else (string, "")
+
+stringToCommandss :: String -> (String, String)
+stringToCommandss string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
+
+ioToRender :: IO () -> Render ()
+ioToRender _ = return ()
+
+repeatCommand :: DrawingArea -> String -> Render ()
+repeatCommand canvas commands = do
+
+    let (command, restString) = stringToCommands commands 
+
+    updateCanvas canvas command
+
+    if restString == "" then
+        return ()
+
+    else repeatCommand canvas restString
+
+repeatCommands :: DrawingArea -> Int -> String -> Render ()
+repeatCommands canvas times commands = do
+
+    if times > 0 then do
+        repeatCommand canvas commands
+        repeatCommands canvas (times-1) commands
+    
+    else return ()
+
 
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
@@ -19,11 +53,15 @@ updateCanvas canvas command = do
                             _    -> return ()
 
     case firstFourLetters of "tree" -> tree argument_4
-                             "quit" -> liftIO mainQuit
                              _      -> return ()
 
+    case firstSixLetters of "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
+                            _        -> return ()
+                            
     where firstTwoLetters  = take 2 command
           firstFourLetters = take 4 command
+          firstSixLetters  = take 6 command
+          (repArg, repCom) = stringToCommandss (drop 7 command)
           argument_2       = read(drop 3 command) :: Double
           argument_4       = read(drop 5 command) :: Double
 
