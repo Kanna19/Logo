@@ -7,6 +7,8 @@ import Data.List
 import Data.Typeable
 import Text.Read
 import Parsers
+import System.IO
+import HelperFunctions
 
 main :: IO ()
 main = do
@@ -14,8 +16,6 @@ main = do
     -- Allocate required resources for GTK+ to work
     -- void is used as no command line arguments are needed
     void initGUI
-
-    putStrLn "Bom!"
 
     -- Create main window
     window <- windowNew
@@ -35,19 +35,56 @@ main = do
 
     canvas `on` draw $ centreTurtle canvas
     canvas `on` draw $ clearScreen
+    canvas `on` draw $ drawTurtle
 
-    btn <- buttonNew
-    set btn [ buttonLabel := "Enter"]
-    btn `on` buttonActivated $ do
+    writeFile "commands.txt" ""
+    handle <- openFile "commands.txt" ReadWriteMode
+    pos <- hGetPosn handle
+
+    enterButton <- buttonNew
+    set enterButton [ buttonLabel := "Enter"]
+
+    enterButton `on` buttonActivated $ do
+        curPos <- hGetPosn handle
+        hSetPosn pos
+        isEnd <- hIsEOF handle
+
+        commands <- if isEnd then
+                        return ""
+                    else hGetLine handle
+
+        canvas `on` draw $ clearScreen
+        canvas `on` draw $ updateCanvas canvas ("repeat 1 [" ++ commands ++ "]")
+
+        hSetPosn curPos
+        
         inputBuffer <- textViewGetBuffer inputPart
         iter <- textBufferGetStartIter displayBuffer
         start <- textBufferGetStartIter inputBuffer
         end <- textBufferGetEndIter inputBuffer
         tempText <- textBufferGetText inputBuffer start end False
+        
         canvas `on` draw $ updateCanvas canvas (("repeat 1 [" ++ tempText) ++ "]")
+        canvas `on` draw $ drawTurtle
         widgetQueueDraw canvas
+        
+        hPutStr handle (tempText ++ " ")
         textBufferInsert displayBuffer iter (tempText ++ "\n")
 
+        return ()
+
+    saveButton <- buttonNew
+    set saveButton [ buttonLabel := "Save"]
+
+    srf <- createImageSurface FormatARGB32 800 600
+    
+    saveButton `on` buttonActivated $ do
+    
+        hSetPosn pos
+        commands <- hGetContents handle
+        renderWith srf (updateCanvas canvas ("repeat 1 [clear " ++ commands ++ "]"))
+        surfaceWriteToPNG srf "Picture.png"
+        liftIO mainQuit
         return ()
 
     displayScroll <- scrolledWindowNew Nothing Nothing
@@ -60,16 +97,21 @@ main = do
     widgetSetSizeRequest inputScroll 800 100
     scrolledWindowSetShadowType inputScroll ShadowIn
 
+    hbox <- hBoxNew False 0
+    boxPackStart hbox enterButton PackNatural 0
+    boxPackStart hbox saveButton PackNatural 0
+
     vbox <- vBoxNew False 0
 
     boxPackStart vbox canvas PackNatural 0
     boxPackStart vbox displayScroll PackNatural 0
     boxPackStart vbox inputScroll PackNatural 0
-    boxPackStart vbox btn PackNatural 0
+    boxPackStart vbox hbox PackNatural 0
 
     containerAdd window vbox
 
     window `on` deleteEvent $ do -- handler to run on window destruction
+       
        liftIO mainQuit
        return False
 
@@ -80,16 +122,12 @@ main = do
     -- This loop listens to events such as button clicks, mouse movement etc
     mainGUI
 
-stringToMaybeString :: String -> Maybe String
-stringToMaybeString x
- | True = Just x
- | otherwise = Nothing
-
-
 centreTurtle :: DrawingArea -> Render ()
 centreTurtle canvas = do
+    
     width'  <- liftIO $ widgetGetAllocatedWidth  canvas
     height' <- liftIO $ widgetGetAllocatedHeight canvas
+    
     let width  = realToFrac width'
         height = realToFrac height'
 
@@ -98,9 +136,21 @@ centreTurtle canvas = do
     setLineCap LineCapRound
     setLineJoin LineJoinRound
 
-    moveTo (width/2) (height/2)
-    lineTo (width/2) (height/2)
+    moveTo (400) (250)
+    lineTo (400) (250)
     strokePreserve
 
-renderToIO :: Render () -> IO ()
-renderToIO world = return ()
+drawTurtle :: Render ()
+drawTurtle = do
+    (w, h) <- getCurrentPoint
+
+    setSourceRGB 0 1 0
+    lineTo (w+10) h
+    lineTo w (h-20)
+    lineTo (w-10) h
+    lineTo w h
+
+    stroke
+    moveTo w h
+    setSourceRGB 1 0 0
+    strokePreserve
