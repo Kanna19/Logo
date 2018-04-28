@@ -10,8 +10,22 @@ import Data.Typeable
 import Text.Read
 import Data.Maybe
 
+breakRepeat :: String -> Int -> Int -> Int
+breakRepeat string numBracks pos 
+    | numBracks == 0 = pos
+    | head string == ']' = breakRepeat (tail string) (numBracks-1) (pos+1)
+    | head string == '[' = breakRepeat (tail string) (numBracks+1) (pos+1)
+    | otherwise = breakRepeat (tail string) (numBracks) (pos+1)
+
 stringToCommands :: String -> (String, String)
-stringToCommands string = (unwords (take 2 (words string)), unwords (drop 2 (words string)))
+stringToCommands string = if head (words string) /= "repeat" then 
+                            (unwords (take 2 (words string)), unwords (drop 2 (words string)))
+
+                          else
+                            (take ((breakRepeat str 1 0) + (fromJust('[' `elemIndex`  string)) +1) string, 
+                                drop ((breakRepeat str 1 0) + (fromJust('[' `elemIndex`  string)) +2) string)
+                        where 
+                            str = drop (fromJust('[' `elemIndex`  string) +1) string
                           
 stringToCommandss :: String -> (String, String)
 stringToCommandss string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
@@ -49,6 +63,7 @@ updateCanvas canvas command = do
                       "lt"     -> turnLeft argument
                       "bk"     -> moveBackward argument
                       "tree"   -> tree argument
+                      "clear"  -> clearScreen
                       "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
                       _        -> return ()
 
@@ -127,7 +142,7 @@ clearScreen = do
     strokePreserve
 
     (w, h) <- getCurrentPoint
-    markEnd w h
+    markEnd 400 150
     where markEnd x y = do
             setSourceRGB 0 1 0
             moveTo x y

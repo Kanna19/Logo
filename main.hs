@@ -44,7 +44,7 @@ main = do
         start <- textBufferGetStartIter inputBuffer
         end <- textBufferGetEndIter inputBuffer
         tempText <- textBufferGetText inputBuffer start end False
-        canvas `on` draw $ updateCanvas canvas tempText
+        canvas `on` draw $ updateCanvas canvas (("repeat 1 [" ++ tempText) ++ "]")
         widgetQueueDraw canvas
         textBufferInsert displayBuffer iter (tempText ++ "\n")
 
