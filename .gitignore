@@ -8,3 +8,4 @@
 # Ignore .o files
 *.o
 *.hi
+docs

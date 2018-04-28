@@ -8,6 +8,7 @@ import Data.Typeable
 import Text.Read
 import Parsers
 import System.IO
+import HelperFunctions
 
 main :: IO ()
 main = do
@@ -39,10 +40,10 @@ main = do
     handle <- openFile "commands.txt" ReadWriteMode
     pos <- hGetPosn handle
 
-    btn <- buttonNew
-    set btn [ buttonLabel := "Enter"]
+    enterButton <- buttonNew
+    set enterButton [ buttonLabel := "Enter"]
 
-    btn `on` buttonActivated $ do
+    enterButton `on` buttonActivated $ do
         
         inputBuffer <- textViewGetBuffer inputPart
         iter <- textBufferGetStartIter displayBuffer
@@ -83,7 +84,7 @@ main = do
     scrolledWindowSetShadowType inputScroll ShadowIn
 
     hbox <- hBoxNew False 0
-    boxPackStart hbox btn PackNatural 0
+    boxPackStart hbox enterButton PackNatural 0
     boxPackStart hbox saveButton PackNatural 0
 
     vbox <- vBoxNew False 0

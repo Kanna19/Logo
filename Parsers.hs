@@ -9,6 +9,7 @@ import Data.List
 import Data.Typeable
 import Text.Read
 import Data.Maybe
+import HelperFunctions
 
 breakRepeat :: String -> Int -> Int -> Int
 breakRepeat string numBracks pos 
@@ -60,7 +61,6 @@ repeatRecurse canvas times commands
     
     | otherwise = return ()
 
-
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
 
@@ -77,91 +77,3 @@ updateCanvas canvas command = do
     where firstWord        = head (words command)
           argument         = read (head (tail((words command)))) :: Double
           (repArg, repCom) = splitString (drop 7 command)
-
-moveForward :: Double -> Render ()
-moveForward distance = do
-
-    (w, h) <- getCurrentPoint
-
-    lineTo w (h - distance)
-    stroke
-
-    markEnd w (h - distance)
-    where markEnd x y = do
-
-            setSourceRGB 0 1 0
-            moveTo x y
-            lineTo x y
-            stroke
-            setSourceRGB 1 0 0
-            moveTo x y
-            strokePreserve
-
-moveBackward :: Double -> Render ()
-moveBackward distance = moveForward (-1 * distance)
-
-turnRight :: Double -> Render ()
-turnRight angle = do
-
-    rotate (angle * pi / 180)
-    (w, h) <- getCurrentPoint
-
-    markEnd w h
-    where markEnd x y = do
-      
-            setSourceRGB 0 1 0
-            moveTo x y
-            lineTo x y
-            stroke
-            setSourceRGB 1 0 0
-            moveTo x y
-            strokePreserve
-
-turnLeft :: Double -> Render ()
-turnLeft angle = turnRight (-1 * angle)
-
-tree :: Double -> Render ()
-tree size
-    | size < 5  = do
-      
-                  moveForward size 
-                  moveBackward size
-                  return ()
- 
-    | otherwise = do
-      
-                  moveForward (size / 3)  
-                  turnLeft 30
-                  tree (2 * size / 3)
-                  turnRight 30
-                  moveForward (size / 6)
-                  turnRight 25
-                  tree (size / 2)
-                  turnLeft 25
-                  moveForward (size / 3)
-                  turnRight 25
-                  tree (size / 2)
-                  turnLeft 25
-                  moveForward (size / 6)
-                  moveBackward size
-                  return ()
-
-clearScreen :: Render ()
-clearScreen = do
-    
-    setSourceRGB 1 1 1
-    paint
-    strokePreserve
-
-    (w, h) <- getCurrentPoint
-    markEnd 400 150
-    
-    where markEnd x y = do
-    
-            setSourceRGB 0 1 0
-            moveTo x y
-            lineTo x y
-            stroke
-            setSourceRGB 1 0 0
-            moveTo x y
-            strokePreserve
