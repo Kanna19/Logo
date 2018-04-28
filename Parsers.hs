@@ -49,6 +49,7 @@ updateCanvas canvas command = do
                       "lt"     -> turnLeft argument
                       "bk"     -> moveBackward argument
                       "tree"   -> tree argument
+                      "clear"  -> clearScreen
                       "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
                       _        -> return ()
 
@@ -127,7 +128,7 @@ clearScreen = do
     strokePreserve
 
     (w, h) <- getCurrentPoint
-    markEnd w h
+    markEnd 400 150
     where markEnd x y = do
             setSourceRGB 0 1 0
             moveTo x y
