@@ -54,3 +54,5 @@ Execute using
 ```
 $ ./logo
 ```
+
+Branch workflow inspired from http://nvie.com/posts/a-successful-git-branching-model/ 
