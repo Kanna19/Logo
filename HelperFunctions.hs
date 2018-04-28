@@ -97,7 +97,7 @@ clearScreen = do
     strokePreserve
 
     (w, h) <- getCurrentPoint
-    markEnd 400 150
+    markEnd 400 250
     
     where markEnd x y = do
     

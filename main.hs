@@ -35,6 +35,7 @@ main = do
 
     canvas `on` draw $ centreTurtle canvas
     canvas `on` draw $ clearScreen
+    canvas `on` draw $ drawTurtle
 
     writeFile "commands.txt" ""
     handle <- openFile "commands.txt" ReadWriteMode
@@ -44,6 +45,18 @@ main = do
     set enterButton [ buttonLabel := "Enter"]
 
     enterButton `on` buttonActivated $ do
+        curPos <- hGetPosn handle
+        hSetPosn pos
+        isEnd <- hIsEOF handle
+
+        commands <- if isEnd then
+                        return ""
+                    else hGetLine handle
+
+        canvas `on` draw $ clearScreen
+        canvas `on` draw $ updateCanvas canvas ("repeat 1 [" ++ commands ++ "]")
+
+        hSetPosn curPos
         
         inputBuffer <- textViewGetBuffer inputPart
         iter <- textBufferGetStartIter displayBuffer
@@ -52,6 +65,7 @@ main = do
         tempText <- textBufferGetText inputBuffer start end False
         
         canvas `on` draw $ updateCanvas canvas (("repeat 1 [" ++ tempText) ++ "]")
+        canvas `on` draw $ drawTurtle
         widgetQueueDraw canvas
         
         hPutStr handle (tempText ++ " ")
@@ -122,6 +136,21 @@ centreTurtle canvas = do
     setLineCap LineCapRound
     setLineJoin LineJoinRound
 
-    moveTo (width/2) (height/2)
-    lineTo (width/2) (height/2)
+    moveTo (400) (250)
+    lineTo (400) (250)
+    strokePreserve
+
+drawTurtle :: Render ()
+drawTurtle = do
+    (w, h) <- getCurrentPoint
+
+    setSourceRGB 0 1 0
+    lineTo (w+10) h
+    lineTo w (h-20)
+    lineTo (w-10) h
+    lineTo w h
+
+    stroke
+    moveTo w h
+    setSourceRGB 1 0 0
     strokePreserve
