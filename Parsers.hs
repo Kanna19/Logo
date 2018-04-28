@@ -13,7 +13,10 @@ import HelperFunctions
 
 -- | The 'breakRepeat' function gets the position of end of the repeat statement
 -- It takes a 'String' and two 'Int' as arguments and returns an 'Int' 
-breakRepeat :: String -> Int -> Int -> Int
+breakRepeat :: String -- ^ String to get position of corresponding ']' of the repeat
+            -> Int    -- ^ Number of brackets not closed
+            -> Int    -- ^ Current position
+            -> Int    -- ^ Return position of ']'
 breakRepeat string numBracks pos 
     
     | numBracks == 0     = pos
@@ -23,7 +26,8 @@ breakRepeat string numBracks pos
 
 -- | The 'stringToCommands' function converts the input string into commands
 -- It takes a 'String' as argument and returns a pair of 'String'
-stringToCommands :: String -> (String, String)
+stringToCommands :: String            -- ^ String to get command from
+                 -> (String, String)  -- ^ Return the command and the rest of the string as a pair
 stringToCommands string
 
     | words string == []              = ("", "")
@@ -36,7 +40,8 @@ stringToCommands string
                           
 -- | The 'splitString' function  breaks the string at first space
 -- It takes a 'String' as argument and returns a pair of 'String'
-splitString :: String -> (String, String)
+splitString :: String           -- ^ String to split
+            -> (String, String) -- ^ Pair of string formed after splitting the string
 splitString string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
 
 -- | The 'ioToRender' function converts IO() to Render()
@@ -46,7 +51,9 @@ ioToRender _ = return ()
 
 -- | The 'repeatCommand' function acts as a helper function to 'repeatRecurse'
 -- It takes one argument of type 'DrawingArea', one argument of type 'String'. 
-repeatCommand :: DrawingArea -> String -> Render ()
+repeatCommand :: DrawingArea -- ^ The drawing area in which drawing takes place
+              -> String      -- ^ String containing commands to be repeated
+              -> Render () 
 repeatCommand canvas commands = do
 
     let (command, restString) = stringToCommands commands 
@@ -64,7 +71,10 @@ repeatCommand canvas commands = do
 
 -- | The 'repeatRecurse' function is used to execute commands containing the repeat statement
 -- It takes one argument of type 'DrawingArea', one argument of type 'Int', one argument of type 'String'
-repeatRecurse :: DrawingArea -> Int -> String -> Render ()
+repeatRecurse :: DrawingArea -- ^ The drawing area in which drawing takes place
+              -> Int         -- ^ Number of times
+              -> String      -- ^ String of the commands to be executed
+              -> Render ()
 repeatRecurse canvas times commands
 
     | times > 0 = do 
@@ -75,7 +85,9 @@ repeatRecurse canvas times commands
 
 -- | The 'updateCanvas' function is responsible for executing the command provided.
 -- This function uses the functions declared in 'HelperFunctions.hs'.
-updateCanvas :: DrawingArea -> String -> Render ()
+updateCanvas :: DrawingArea -- ^ The drawing area in which drawing takes place
+             -> String      -- ^ String of commands to be executed
+             -> Render ()
 updateCanvas canvas command = do
 
     case firstWord of "fd"     -> moveForward argument
