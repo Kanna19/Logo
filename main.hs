@@ -107,16 +107,12 @@ main = do
     -- This loop listens to events such as button clicks, mouse movement etc
     mainGUI
 
-stringToMaybeString :: String -> Maybe String
-stringToMaybeString x
- | True = Just x
- | otherwise = Nothing
-
-
 centreTurtle :: DrawingArea -> Render ()
 centreTurtle canvas = do
+    
     width'  <- liftIO $ widgetGetAllocatedWidth  canvas
     height' <- liftIO $ widgetGetAllocatedHeight canvas
+    
     let width  = realToFrac width'
         height = realToFrac height'
 
@@ -128,6 +124,3 @@ centreTurtle canvas = do
     moveTo (width/2) (height/2)
     lineTo (width/2) (height/2)
     strokePreserve
-
-renderToIO :: Render () -> IO ()
-renderToIO world = return ()
