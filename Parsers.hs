@@ -130,7 +130,7 @@ drawTurtle :: Render ()
 drawTurtle = do
 
     (w, h) <- getCurrentPoint
-
+    
     setSourceRGB 0 1 0
     lineTo (w+10) h
     lineTo w (h-20)
