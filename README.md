@@ -3,6 +3,8 @@ This project is a haskell implementation of the popular educational programming 
 
 You can learn more about logo in this wikipedia [article](https://en.wikipedia.org/wiki/Logo_(programming_language)).
 
+# Installation Instructions
+  Install Haskell Platform.
 ## Installing haskell platform (for Ubuntu)
 ```
 $ sudo apt-get install haskell-platform
@@ -18,4 +20,30 @@ Gtk2Hs is a GUI library for Haskell based on GTK+. GTK+ is an extensive and matu
 This project uses the newer gtk+3 bindings
 ```
 $ sudo apt-get install libghc-gtk3-dev
+```
+Clone the repo
+```
+$ git clone https://github.com/IITH-SBJoshi/haskell-1.git
+```
+Change the working directory
+
+```
+$ cd haskell-1
+```
+
+Installation can be done using Cabal
+
+```
+$ cabal install
+```
+
+The executable ./logo can be found in the /dist/build/logo directory
+
+```
+$ cd dist/build/logo
+```
+
+Execute using
+```
+$ ./logo
 ```
