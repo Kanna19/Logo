@@ -12,7 +12,8 @@ import Data.Maybe
 
 -- | The 'moveForward' function moves the logo in forward direction.
 -- It takes one argument of type 'Double'.
-moveForward :: Double -> Render ()
+moveForward :: Double   -- ^ Distance to travel
+            -> Render ()
 moveForward distance = do
 
     (w, h) <- getCurrentPoint
@@ -33,12 +34,14 @@ moveForward distance = do
 
 -- | The 'moveBackward' function moves the logo in backward direction.
 -- It takes one argument of type 'Double'.
-moveBackward :: Double -> Render ()
+moveBackward :: Double  -- ^ Distance to travel 
+             -> Render ()
 moveBackward distance = moveForward (-1 * distance)
 
 -- | The 'turnRight' function rotates the logo in clockwise direction.
 -- It takes one argument of type 'Double'.
-turnRight :: Double -> Render ()
+turnRight :: Double     -- ^ Angle 
+          -> Render ()
 turnRight angle = do
 
     rotate (angle * pi / 180)
@@ -57,12 +60,15 @@ turnRight angle = do
 
 -- | The 'turnLeft' function rotates the logo in anticlockwise direction.
 -- It takes one argument of type 'Double'.
-turnLeft :: Double -> Render ()
+turnLeft :: Double  -- ^ Angle 
+        -> Render ()
 turnLeft angle = turnRight (-1 * angle)
 
 -- | The 'tree' function draws a tree of size provided
 -- It takes one argument of type 'Double'.
-tree :: Double -> Render ()
+tree :: Double      -- ^ Size of the tree  
+     -> Render ()
+
 tree size
     | size < 5  = do
       
@@ -88,9 +94,11 @@ tree size
                   moveBackward size
                   return ()
 
+-- | The 'clearScreen' function clears the screen 
 clearScreen :: Render ()
 clearScreen = do
-    identityMatrix
+
+    identityMatrix      -- Resets the transformation matrix
     setSourceRGB 1 1 1
     paint
     strokePreserve

@@ -10,6 +10,7 @@ import Parsers
 import System.IO
 import HelperFunctions
 
+-- | The function 'main' handles IO
 main :: IO ()
 main = do
 
@@ -51,6 +52,7 @@ main = do
 
         commands <- if isEnd then
                         return ""
+
                     else hGetLine handle
 
         canvas `on` draw $ clearScreen
@@ -122,7 +124,10 @@ main = do
     -- This loop listens to events such as button clicks, mouse movement etc
     mainGUI
 
-centreTurtle :: DrawingArea -> Render ()
+-- | The 'centerTurtle' function centers the turtle
+-- It takes one argument 'DrawingArea' 
+centreTurtle :: DrawingArea     -- ^ Drawing Area 
+             -> Render ()
 centreTurtle canvas = do
     
     width'  <- liftIO $ widgetGetAllocatedWidth  canvas
@@ -140,8 +145,10 @@ centreTurtle canvas = do
     lineTo (400) (250)
     strokePreserve
 
+-- | The 'drawTurtle' function draws the turtle
 drawTurtle :: Render ()
 drawTurtle = do
+
     (w, h) <- getCurrentPoint
 
     setSourceRGB 0 1 0
