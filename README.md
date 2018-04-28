@@ -31,7 +31,14 @@ Change the working directory
 $ cd haskell-1
 ```
 
-Installation can be done using Cabal
+## Building with Cabal
+To configure and build using cabal, first download the repo and cd into it. Then execute the following commands
+
+```
+$ cabal configure
+$ cabal build
+```
+Once build is successfull, installation can be done using Cabal
 
 ```
 $ cabal install
