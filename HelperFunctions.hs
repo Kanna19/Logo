@@ -91,6 +91,7 @@ tree size
 clearScreen :: Render ()
 clearScreen = do
     
+    identityMatrix
     setSourceRGB 1 1 1
     paint
     strokePreserve
