@@ -19,3 +19,16 @@ This project uses the newer gtk+3 bindings
 ```
 $ sudo apt-get install libghc-gtk3-dev
 ```
+
+## Building with Cabal
+To configure and build using cabal, first download the repo and cd into it. Then execute the following commands
+
+```
+$ cabal configure
+$ cabal build
+```
+
+Once the build is successful install using cabal
+```
+$ cabal install
+```
