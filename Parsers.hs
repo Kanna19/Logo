@@ -18,7 +18,14 @@ breakRepeat string numBracks pos
     | otherwise = breakRepeat (tail string) (numBracks) (pos+1)
 
 stringToCommands :: String -> (String, String)
-stringToCommands string = if head (words string) /= "repeat" then 
+stringToCommands string = 
+                          if words string == [] then
+                            ("", "")
+
+                          else if head (words string) == "clear" then
+                           (head (words string), drop 6 string)
+
+                          else if head (words string) /= "repeat" then 
                             (unwords (take 2 (words string)), unwords (drop 2 (words string)))
 
                           else
@@ -38,7 +45,11 @@ repeatCommand canvas commands = do
 
     let (command, restString) = stringToCommands commands 
 
-    updateCanvas canvas command
+    if command /= "" then
+      updateCanvas canvas command
+    
+    else 
+      return ()
 
     if restString == "" then
         return ()
@@ -65,6 +76,7 @@ updateCanvas canvas command = do
                       "tree"   -> tree argument
                       "clear"  -> clearScreen
                       "repeat" -> repeatCommands canvas ((read repArg) :: Int) (init (tail repCom))
+                      "exit"   -> liftIO mainQuit
                       _        -> return ()
 
     where firstWord        = head (words command)

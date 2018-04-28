@@ -7,6 +7,7 @@ import Data.List
 import Data.Typeable
 import Text.Read
 import Parsers
+import System.IO
 
 main :: IO ()
 main = do
@@ -14,8 +15,6 @@ main = do
     -- Allocate required resources for GTK+ to work
     -- void is used as no command line arguments are needed
     void initGUI
-
-    putStrLn "Bom!"
 
     -- Create main window
     window <- windowNew
@@ -36,18 +35,41 @@ main = do
     canvas `on` draw $ centreTurtle canvas
     canvas `on` draw $ clearScreen
 
+    writeFile "commands.txt" ""
+    handle <- openFile "commands.txt" ReadWriteMode
+    pos <- hGetPosn handle
+
     btn <- buttonNew
     set btn [ buttonLabel := "Enter"]
+
     btn `on` buttonActivated $ do
+        
         inputBuffer <- textViewGetBuffer inputPart
         iter <- textBufferGetStartIter displayBuffer
         start <- textBufferGetStartIter inputBuffer
         end <- textBufferGetEndIter inputBuffer
         tempText <- textBufferGetText inputBuffer start end False
+        
         canvas `on` draw $ updateCanvas canvas (("repeat 1 [" ++ tempText) ++ "]")
         widgetQueueDraw canvas
+        
+        hPutStr handle (tempText ++ " ")
         textBufferInsert displayBuffer iter (tempText ++ "\n")
 
+        return ()
+
+    saveButton <- buttonNew
+    set saveButton [ buttonLabel := "Save"]
+
+    srf <- createImageSurface FormatARGB32 800 600
+    
+    saveButton `on` buttonActivated $ do
+    
+        hSetPosn pos
+        commands <- hGetContents handle
+        renderWith srf (updateCanvas canvas ("repeat 1 [clear " ++ commands ++ "]"))
+        surfaceWriteToPNG srf "Picture.png"
+        liftIO mainQuit
         return ()
 
     displayScroll <- scrolledWindowNew Nothing Nothing
@@ -60,16 +82,21 @@ main = do
     widgetSetSizeRequest inputScroll 800 100
     scrolledWindowSetShadowType inputScroll ShadowIn
 
+    hbox <- hBoxNew False 0
+    boxPackStart hbox btn PackNatural 0
+    boxPackStart hbox saveButton PackNatural 0
+
     vbox <- vBoxNew False 0
 
     boxPackStart vbox canvas PackNatural 0
     boxPackStart vbox displayScroll PackNatural 0
     boxPackStart vbox inputScroll PackNatural 0
-    boxPackStart vbox btn PackNatural 0
+    boxPackStart vbox hbox PackNatural 0
 
     containerAdd window vbox
 
     window `on` deleteEvent $ do -- handler to run on window destruction
+       
        liftIO mainQuit
        return False
 
