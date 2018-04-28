@@ -11,6 +11,8 @@ import Text.Read
 import Data.Maybe
 import HelperFunctions
 
+-- | The 'breakRepeat' function gets the position of end of the repeat statement
+-- It takes a 'String' and two 'Int' as arguments and returns an 'Int' 
 breakRepeat :: String -> Int -> Int -> Int
 breakRepeat string numBracks pos 
     
@@ -19,6 +21,8 @@ breakRepeat string numBracks pos
     | head string == '[' = breakRepeat (tail string) (numBracks+1) (pos+1)
     | otherwise          = breakRepeat (tail string) (numBracks) (pos+1)
 
+-- | The 'stringToCommands' function converts the input string into commands
+-- It takes a 'String' as argument and returns a pair of 'String'
 stringToCommands :: String -> (String, String)
 stringToCommands string
 
@@ -30,12 +34,18 @@ stringToCommands string
     
     where str = drop (fromJust('[' `elemIndex` string) + 1) string
                           
+-- | The 'splitString' function  breaks the string at first space
+-- It takes a 'String' as argument and returns a pair of 'String'
 splitString :: String -> (String, String)
 splitString string = splitAt (fromJust(' ' `elemIndex` string) + 1) string
 
+-- | The 'ioToRender' function converts IO() to Render()
+-- It takes an argument of type 'IO()' and returns an argument of type 'Render()'
 ioToRender :: IO () -> Render ()
 ioToRender _ = return ()
 
+-- | The 'repeatCommand' function acts as a helper function to 'repeatRecurse'
+-- It takes one argument of type 'DrawingArea', one argument of type 'String'. 
 repeatCommand :: DrawingArea -> String -> Render ()
 repeatCommand canvas commands = do
 
@@ -52,6 +62,8 @@ repeatCommand canvas commands = do
 
     else repeatCommand canvas restString
 
+-- | The 'repeatRecurse' function is used to execute commands containing the repeat statement
+-- It takes one argument of type 'DrawingArea', one argument of type 'Int', one argument of type 'String'
 repeatRecurse :: DrawingArea -> Int -> String -> Render ()
 repeatRecurse canvas times commands
 
@@ -61,6 +73,8 @@ repeatRecurse canvas times commands
     
     | otherwise = return ()
 
+-- | The 'updateCanvas' function is responsible for executing the command provided.
+-- This function uses the functions declared in 'HelperFunctions.hs'.
 updateCanvas :: DrawingArea -> String -> Render ()
 updateCanvas canvas command = do
 
