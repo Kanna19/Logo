@@ -4,8 +4,8 @@
 # Unignore all with extensions
 !*.*
 !LICENSE
+!docs/
 
 # Ignore .o files
 *.o
 *.hi
-docs
