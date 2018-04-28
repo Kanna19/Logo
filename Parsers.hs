@@ -103,3 +103,41 @@ updateCanvas canvas command = do
     where firstWord        = head (words command)
           argument         = read (head (tail((words command)))) :: Double
           (repArg, repCom) = splitString (drop 7 command)
+
+-- | The 'centerTurtle' function centers the turtle
+-- It takes one argument 'DrawingArea' 
+centreTurtle :: DrawingArea     -- ^ Drawing Are 
+             -> Render ()
+centreTurtle canvas = do
+    
+    width'  <- liftIO $ widgetGetAllocatedWidth  canvas
+    height' <- liftIO $ widgetGetAllocatedHeight canvas
+    
+    let width  = realToFrac width'
+        height = realToFrac height'
+
+    setSourceRGB 1 0 0
+    setLineWidth 1
+    setLineCap LineCapRound
+    setLineJoin LineJoinRound
+
+    moveTo (400) (250)
+    lineTo (400) (250)
+    strokePreserve
+
+-- | The 'drawTurtle' function draws the turtle
+drawTurtle :: Render ()
+drawTurtle = do
+
+    (w, h) <- getCurrentPoint
+
+    setSourceRGB 0 1 0
+    lineTo (w+10) h
+    lineTo w (h-20)
+    lineTo (w-10) h
+    lineTo w h
+
+    stroke
+    moveTo w h
+    setSourceRGB 1 0 0
+    strokePreserve
