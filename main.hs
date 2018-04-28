@@ -134,27 +134,34 @@ main = do
         return ()
 
     -- Functions arranging the layout of the program
+
+    -- Make display part scrollable
     displayScroll <- scrolledWindowNew Nothing Nothing
     containerAdd displayScroll displayPart
     widgetSetSizeRequest displayScroll 800 100
     scrolledWindowSetShadowType displayScroll ShadowOut
 
+    -- Make input part scrollable
     inputScroll <- scrolledWindowNew Nothing Nothing
     containerAdd inputScroll inputPart
     widgetSetSizeRequest inputScroll 800 100
     scrolledWindowSetShadowType inputScroll ShadowIn
 
+    -- Create horizontal box to contain the enter and save buttons
     hbox <- hBoxNew False 0
     boxPackStart hbox enterButton PackNatural 0
     boxPackStart hbox saveButton PackNatural 0
 
+    -- Create new vertical box
     vbox <- vBoxNew False 0
 
+    -- Pack canvas into the vertical box
     boxPackStart vbox canvas PackNatural 0
     boxPackStart vbox displayScroll PackNatural 0
     boxPackStart vbox inputScroll PackNatural 0
     boxPackStart vbox hbox PackNatural 0
 
+    -- Add the vertical box to the main window
     containerAdd window vbox
 
     window `on` deleteEvent $ do -- handler to run on window destruction
